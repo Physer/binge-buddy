@@ -9,17 +9,17 @@ public sealed class Worker : IHostedService, IDisposable
 {
     private readonly ILogger<Worker> _logger;
     private readonly ScrapingOptions _scrapingOptions;
-    private readonly IShowScraper _showScraper;
+    private readonly IServiceProvider _serviceProvider;
 
     private Timer? _timer = null;
 
     public Worker(ILogger<Worker> logger,
         IOptions<ScrapingOptions> options,
-        IShowScraper showScraper)
+        IServiceProvider serviceProvider)
     {
         _logger = logger;
         _scrapingOptions = options.Value;
-        _showScraper = showScraper;
+        _serviceProvider = serviceProvider;
     }
 
     public Task StartAsync(CancellationToken stoppingToken)
@@ -33,7 +33,9 @@ public sealed class Worker : IHostedService, IDisposable
     {
         var stopwatch = Stopwatch.StartNew();
         _logger.LogInformation("Scraping at {timing} UTC", DateTime.UtcNow.ToLongTimeString());
-        _ = await _showScraper.ScrapeShows();
+        using var scope = _serviceProvider.CreateScope();
+        var showScraper = scope.ServiceProvider.GetRequiredService<IShowScraper>();
+        await showScraper.ScrapeShowsAsync();
         stopwatch.Stop();
         _logger.LogInformation("Finished scraping in {elapsedMiliseconds} miliseconds", stopwatch.ElapsedMilliseconds);
     }

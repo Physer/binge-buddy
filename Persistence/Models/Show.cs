@@ -2,12 +2,13 @@
 
 internal sealed class Show
 {
-    public Guid Id { get; init; }
-    public int ExternalId { get; set; }
-    public string? Name { get; set; }
-    public string? Language { get; set; }
-    public DateTime Premiered { get; set; }
-    public DateTime? Ended { get; set; }
-    public string? Genres { get; set; }
-    public string? Summary { get; set; }
+    public required Guid Id { get; init; }
+    public required int ExternalId { get; init; }
+    public required string Name { get; init; }
+    public required string Language { get; init; }
+    public DateTime? Premiered { get; init; }
+    public DateTime? Ended { get; init; }
+    public string? Genres { get; init; }
+    public string? Summary { get; init; }
+    public required DateTime UpdatedAt { get; init; }
 }

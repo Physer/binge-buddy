@@ -1,57 +1,38 @@
-﻿using Application.Options;
+﻿using Application.Data;
 using Application.Scraping;
-using Domain;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Net;
-using System.Text.Json;
-using TvMaze.Models;
 
 namespace TvMaze;
 
 internal class TvMazeScraper : IShowScraper
 {
-    private readonly HttpClient _httpClient;
-    private readonly ScrapingOptions _scrapingOptions;
     private readonly ILogger<TvMazeScraper> _logger;
+    private readonly IRepository _repository;
+    private readonly TvMazeClient _client;
 
-    public TvMazeScraper(HttpClient httpClient,
-        IOptions<ScrapingOptions> options,
-        ILogger<TvMazeScraper> logger)
+    public TvMazeScraper(ILogger<TvMazeScraper> logger,
+        IRepository repository,
+        TvMazeClient client)
     {
-        _httpClient = httpClient;
-        _scrapingOptions = options.Value;
         _logger = logger;
+        _repository = repository;
+        _client = client;
     }
 
-    public async Task<IEnumerable<Show>> ScrapeShows(int latestScrapedShowId = 0)
+    public async Task ScrapeShowsAsync()
     {
         _logger.LogInformation("Starting scraping TV shows");
-        _logger.LogInformation("Determing starting page...");
-
-        var pageToStartFrom = Math.Floor(new decimal(latestScrapedShowId / _scrapingOptions.PageSize));
-        List<Show> allShows = new();
-
-        _logger.LogInformation("Starting scraping from page {pageToStartFrom}", pageToStartFrom);
-        var page = pageToStartFrom;
-        while (true)
+        var currentPage = 0;
+        var finishedScraping = false;
+        while (!finishedScraping)
         {
-            _logger.LogInformation("Querying TVMaze API...");
-            var pagedShowsResponse = await _httpClient.GetAsync($"/shows?page={page}");
-            if (pagedShowsResponse.StatusCode == HttpStatusCode.NotFound)
+            var showData = await _client.ScrapePage(currentPage);
+            if (!showData.Any())
                 break;
 
-            var serializedShowData = await pagedShowsResponse.Content.ReadAsStringAsync();
-            var showData = JsonSerializer.Deserialize<IEnumerable<TvMazeShow>>(serializedShowData, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            if (showData is null)
-                break;
-
-            _logger.LogInformation("Received {amountOfShows} from {page}", showData.Count(), page);
-            allShows.AddRange(TvMazeMapper.Map(showData));
-            page++;
+            var shows = TvMazeMapper.Map(showData);
+            await _repository.AddOrUpdateShowsAsync(shows);
+            currentPage++;
         }
-
-        _logger.LogInformation("Done querying TVMaze API. Processed {totalAmountOfShows} shows in total", allShows.Count());
-        return allShows;
     }
 }
