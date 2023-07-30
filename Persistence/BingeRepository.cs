@@ -16,12 +16,12 @@ internal class BingeRepository : IRepository
         _logger = logger;
     }
 
-    public async Task AddOrUpdateShowsAsync(IEnumerable<Show> shows)
+    public void AddOrUpdateShows(IEnumerable<Show> shows)
     {
         _logger.LogInformation("Mapping and inserting/updating {showsCount} into the database", shows.Count());
         var databaseModels = DatabaseMapper.Map(shows);
         _dbContext.Shows.UpdateRange(databaseModels);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
         _logger.LogInformation("Succesfully stored {showsCount} into the database", shows.Count());
     }
 }

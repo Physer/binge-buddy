@@ -7,7 +7,6 @@ internal class DatabaseMapper
 
     public static Models.Show Map(Domain.Show domainModel) => new()
     {
-        Id = Guid.NewGuid(),
         ExternalId = domainModel.ExternalId,
         Language = domainModel.Language,
         Name = domainModel.Name,

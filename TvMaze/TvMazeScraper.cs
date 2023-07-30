@@ -31,7 +31,7 @@ internal class TvMazeScraper : IShowScraper
                 break;
 
             var shows = TvMazeMapper.Map(showData);
-            await _repository.AddOrUpdateShowsAsync(shows);
+            _repository.AddOrUpdateShows(shows);
             currentPage++;
         }
     }
