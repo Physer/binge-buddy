@@ -1,11 +1,11 @@
-﻿using Application.Scraping;
+﻿using Application.Options;
+using Application.Scraping;
 using Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text.Json;
 using TvMaze.Models;
-using TvMaze.Options;
 
 namespace TvMaze;
 
@@ -37,12 +37,12 @@ internal class TvMazeScraper : IShowScraper
         while (true)
         {
             _logger.LogInformation("Querying TVMaze API...");
-            var pagedShowsResponse = await _httpClient.GetAsync($"/shows?page={pageToStartFrom}");
+            var pagedShowsResponse = await _httpClient.GetAsync($"/shows?page={page}");
             if (pagedShowsResponse.StatusCode == HttpStatusCode.NotFound)
                 break;
 
             var serializedShowData = await pagedShowsResponse.Content.ReadAsStringAsync();
-            var showData = JsonSerializer.Deserialize<IEnumerable<TvMazeShow>>(serializedShowData);
+            var showData = JsonSerializer.Deserialize<IEnumerable<TvMazeShow>>(serializedShowData, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             if (showData is null)
                 break;
 

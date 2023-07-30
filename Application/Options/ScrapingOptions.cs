@@ -1,4 +1,4 @@
-﻿namespace TvMaze.Options;
+﻿namespace Application.Options;
 
 public class ScrapingOptions
 {
@@ -6,4 +6,5 @@ public class ScrapingOptions
 
     public string? BaseUrl { get; set; }
     public int PageSize { get; set; }
+    public int SynchronizationIntervalInSeconds { get; set; }
 }

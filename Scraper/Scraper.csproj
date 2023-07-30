@@ -14,5 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\TvMaze\TvMaze.csproj" />
   </ItemGroup>
 </Project>
