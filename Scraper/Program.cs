@@ -1,8 +1,11 @@
+using Persistence;
 using Scraper;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureServices((context, services) =>
     {
+        services.RegisterPersistenceDependencies(context.Configuration);
+
         services.AddHostedService<Worker>();
     })
     .Build();
