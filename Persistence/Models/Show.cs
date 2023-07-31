@@ -8,7 +8,7 @@ internal sealed class Show
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public int? ExternalId { get; init; }
+    public int ExternalId { get; init; }
     public required string Name { get; init; }
     public string? Language { get; init; }
     public DateTime? Premiered { get; init; }
