@@ -1,10 +1,15 @@
-﻿namespace Persistence.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Persistence.Models;
+
+[PrimaryKey(nameof(Id), nameof(ExternalId), nameof(Name))]
 internal sealed class Show
 {
-    public Guid Id { get; set; }
-    public required int ExternalId { get; init; }
-    public string? Name { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+    public int? ExternalId { get; init; }
+    public required string Name { get; init; }
     public string? Language { get; init; }
     public DateTime? Premiered { get; init; }
     public DateTime? Ended { get; init; }

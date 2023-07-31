@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(BingeContext))]
-    [Migration("20230730153435_InitialCreate")]
+    [Migration("20230731132432_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,9 +27,17 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Persistence.Models.Show", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ExternalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("Ended")
                         .HasColumnType("datetime2");
@@ -40,19 +48,16 @@ namespace Persistence.Migrations
                     b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Premiered")
+                    b.Property<DateTime?>("Premiered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TvMazeId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "ExternalId", "Name");
 
                     b.ToTable("Shows");
                 });

@@ -24,23 +24,25 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Persistence.Models.Show", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ExternalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("Ended")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ExternalId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Genres")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Premiered")
@@ -52,7 +54,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "ExternalId", "Name");
 
                     b.ToTable("Shows");
                 });

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,18 +15,20 @@ namespace Persistence.Migrations
                 name: "Shows",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TvMazeId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExternalId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Premiered = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Premiered = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Ended = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Genres = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shows", x => x.Id);
+                    table.PrimaryKey("PK_Shows", x => new { x.Id, x.ExternalId, x.Name });
                 });
         }
 

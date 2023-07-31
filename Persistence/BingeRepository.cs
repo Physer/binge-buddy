@@ -22,11 +22,14 @@ internal class BingeRepository : IRepository
         var databaseModels = DatabaseMapper.Map(shows);
         foreach (var model in databaseModels)
         {
-            var existingModel = _dbContext.Find<Models.Show>(model.Name, model.Premiered);
+            var existingModel = _dbContext.Shows.FirstOrDefault(show => show.ExternalId == model.ExternalId && show.Name.Equals(model.Name));
             if (existingModel is null)
                 _dbContext.Shows.Add(model);
             else
+            {
+                model.Id = existingModel.Id;
                 _dbContext.Entry(existingModel).CurrentValues.SetValues(model);
+            }
         }
         _dbContext.SaveChanges();
         _logger.LogInformation("Succesfully stored {showsCount} into the database", shows.Count());
