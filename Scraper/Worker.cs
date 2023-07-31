@@ -37,7 +37,7 @@ public sealed class Worker : IHostedService, IDisposable
         var showScraper = scope.ServiceProvider.GetRequiredService<IShowScraper>();
         await showScraper.ScrapeShowsAsync();
         stopwatch.Stop();
-        _logger.LogInformation("Finished scraping in {elapsedMiliseconds} miliseconds", stopwatch.ElapsedMilliseconds);
+        _logger.LogInformation("Finished scraping in {elapsedSeconds} seconds", stopwatch.ElapsedMilliseconds/1000);
     }
 
     public Task StopAsync(CancellationToken stoppingToken)
