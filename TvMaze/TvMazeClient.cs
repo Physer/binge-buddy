@@ -5,7 +5,7 @@ using TvMaze.Models;
 
 namespace TvMaze;
 
-internal class TvMazeClient
+internal class TvMazeClient : ITvMazeClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TvMazeClient> _logger;
@@ -17,7 +17,7 @@ internal class TvMazeClient
         _logger = logger;
     }
 
-    public async Task<IEnumerable<TvMazeShow>> ScrapePage(int pageToScrape)
+    public async Task<IEnumerable<TvMazeShow>> ScrapePageAsync(int pageToScrape)
     {
         _logger.LogInformation("Querying TVMaze API...");
         var pagedShowsResponse = await _httpClient.GetAsync($"/shows?page={pageToScrape}");

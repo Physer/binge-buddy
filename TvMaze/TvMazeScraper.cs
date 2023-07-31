@@ -7,12 +7,12 @@ namespace TvMaze;
 internal class TvMazeScraper : IShowScraper
 {
     private readonly ILogger<TvMazeScraper> _logger;
-    private readonly IRepository _repository;
-    private readonly TvMazeClient _client;
+    internal readonly IRepository _repository;
+    private readonly ITvMazeClient _client;
 
     public TvMazeScraper(ILogger<TvMazeScraper> logger,
         IRepository repository,
-        TvMazeClient client)
+        ITvMazeClient client)
     {
         _logger = logger;
         _repository = repository;
@@ -23,10 +23,9 @@ internal class TvMazeScraper : IShowScraper
     {
         _logger.LogInformation("Starting scraping TV shows");
         var currentPage = 0;
-        var finishedScraping = false;
-        while (!finishedScraping)
+        while (true)
         {
-            var showData = await _client.ScrapePage(currentPage);
+            var showData = await _client.ScrapePageAsync(currentPage);
             if (!showData.Any())
                 break;
 
