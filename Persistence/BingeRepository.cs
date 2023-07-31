@@ -20,7 +20,14 @@ internal class BingeRepository : IRepository
     {
         _logger.LogInformation("Mapping and inserting/updating {showsCount} into the database", shows.Count());
         var databaseModels = DatabaseMapper.Map(shows);
-        _dbContext.Shows.UpdateRange(databaseModels);
+        foreach (var model in databaseModels)
+        {
+            var existingModel = _dbContext.Find<Models.Show>(model.Name, model.Premiered);
+            if (existingModel is null)
+                _dbContext.Shows.Add(model);
+            else
+                _dbContext.Entry(existingModel).CurrentValues.SetValues(model);
+        }
         _dbContext.SaveChanges();
         _logger.LogInformation("Succesfully stored {showsCount} into the database", shows.Count());
     }
