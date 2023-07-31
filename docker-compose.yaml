@@ -1,0 +1,58 @@
+---
+services:
+  redis:
+    profiles:
+      - binge
+    container_name: caching
+    image: redis:latest
+    ports:
+      - 6379:6379
+  sql:
+    profiles:
+      - binge
+      - migrations
+    container_name: database
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DATABASE_PASSWORD}
+  migrations:
+    depends_on:
+      - sql
+    profiles:
+      - migrations
+    container_name: migrations
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations
+      args:
+        - CONNECTION_STRING=${CONNECTION_STRING}
+  api:
+    profiles:
+      - binge
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SERVICE_NAME=API
+    environment:
+      - ConnectionStrings__BingeDatabase=${CONNECTION_STRING}
+      - Caching__ConnectionString=redis
+    ports:
+      - 80
+  scraper:
+    profiles:
+      - binge
+    container_name: scraper
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SERVICE_NAME=Scraper
+    environment:
+      - ConnectionStrings__BingeDatabase=${CONNECTION_STRING}
+    restart: always
