@@ -16,6 +16,8 @@ internal class BingeRepository : IRepository
         _logger = logger;
     }
 
+    public IEnumerable<Show> GetShows(int limit, int offset) => DatabaseMapper.Map(_dbContext.Shows.Take(limit+offset).Skip(offset).AsEnumerable());
+
     public void AddOrUpdateShows(IEnumerable<Show> shows)
     {
         _logger.LogInformation("Mapping and inserting/updating {showsCount} into the database", shows.Count());
