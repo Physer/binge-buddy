@@ -30,7 +30,7 @@ internal class TvMazeScraper : IShowScraper
                 break;
 
             var shows = TvMazeMapper.Map(showData);
-            _repository.AddOrUpdateShows(shows);
+            _repository.AddOrUpdateShows(shows.Where(show => show.Premiered.HasValue && show.Premiered.Value > new DateOnly(2014, 01, 01)));
             currentPage++;
         }
     }
