@@ -43,7 +43,7 @@ services:
       - ConnectionStrings__BingeDatabase=${CONNECTION_STRING}
       - Caching__ConnectionString=redis
     ports:
-      - 80
+      - 8888:80
   scraper:
     profiles:
       - binge
