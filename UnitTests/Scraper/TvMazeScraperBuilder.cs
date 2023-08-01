@@ -19,9 +19,10 @@ internal class TvMazeScraperBuilder
         _client = Substitute.For<ITvMazeClient>();
     }
 
-    public async Task<TvMazeScraperBuilder> WithClientReturningShowDataForPage(int pageToReturnDataFor, IEnumerable<TvMazeShow> showData)
+    public TvMazeScraperBuilder WithClientReceivingNoDataAfterPage(int pageToStopReceivingDataAt, IEnumerable<TvMazeShow> dataToReceive)
     {
-        (await _client.ScrapePageAsync(pageToReturnDataFor)).Returns(showData);
+        _client.ScrapePageAsync(Arg.Any<int>()).Returns(dataToReceive);
+        _client.ScrapePageAsync(pageToStopReceivingDataAt).Returns(Enumerable.Empty<TvMazeShow>());
 
         return this;
     }
