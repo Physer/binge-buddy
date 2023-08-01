@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("IntegrationTests")]
 namespace Persistence;
 
 public static class DependencyRegistrator

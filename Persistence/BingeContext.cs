@@ -3,7 +3,7 @@ using Persistence.Models;
 
 namespace Persistence;
 
-internal class BingeContext : DbContext
+public class BingeContext : DbContext
 {
     public BingeContext(DbContextOptions options) : base(options) { }
 

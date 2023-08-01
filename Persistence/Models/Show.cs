@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Persistence.Models;
 
 [PrimaryKey(nameof(Id), nameof(ExternalId), nameof(Name))]
-internal sealed class Show
+public sealed class Show
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
